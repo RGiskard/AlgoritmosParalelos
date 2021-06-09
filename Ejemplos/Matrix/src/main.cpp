@@ -2,12 +2,12 @@
 #include <random>
 #include <chrono>
 #include <thread>
-#include <windows.h>
+//#include <windows.h>
 
 
-static const long MATRIX_SIZE = 1000;
+static const long MATRIX_SIZE = 10;
 static const int THREADS_NUMBER = 4;
-static const long N_EXECUTIONS = 1e3;
+static const long N_EXECUTIONS =1; //1e3;
 
 struct Matrix {
   float ** elements;
@@ -31,7 +31,8 @@ struct Matrix {
     for (int i = 0; i < MATRIX_SIZE; ++i) {
       elements[i] = new float[MATRIX_SIZE];
       for (int j = 0; j < MATRIX_SIZE; ++j) {
-        elements[i][j] = random();
+          float value= random();
+          elements[i][j] = value;
       }
     }
   }
@@ -62,7 +63,6 @@ int main() {
   benchmark_execution(single_execution);
   std::cout << "Multi thread execution" << std::endl;
   benchmark_execution(multithreading_execution);
-  Sleep(100000);
   std::cout << "End of program" << std::endl;
 }
 
@@ -73,7 +73,11 @@ void benchmark_execution(void(*execution_function)(Matrix& r, long long& elapsed
   for (int i = 0; i < N_EXECUTIONS; ++i) {
     long long elapsed_time = 0.0;
     m1.initialize_random();
+      std::cout<<"Inicio Matriz"<<std::endl;
+      m1.print();
     m2.initialize_random();
+      std::cout<<"Inicio Matriz"<<std::endl;
+      m1.print();
     r.initialize_zero();
 
     execution_function(r, elapsed_time, m1, m2);
@@ -98,15 +102,15 @@ void multiply(Matrix& r, const Matrix& m1, const Matrix& m2) {
 
 void single_execution(Matrix& r, long long& elapsed_time, const Matrix& m1, const Matrix& m2) {
   //std::cout << "Starting single thread execution..." << std::endl;
-  long long start_time = milliseconds_now();
+  //long long start_time = milliseconds_now();
 
   //std::cout << "Calculating...." << std::endl;
   multiply(r, m1, m2);
 
-  long long end_time = milliseconds_now();
+  //long long end_time = milliseconds_now();
   //std::cout << "Finishing single thread execution..." << std::endl;
 
-  elapsed_time = end_time - start_time;
+  //elapsed_time = end_time - start_time;
 }
 
 void multiply_threading(Matrix& result, const int thread_number, const Matrix& m1, const Matrix& m2) {
@@ -143,7 +147,7 @@ void multiply_threading(Matrix& result, const int thread_number, const Matrix& m
 
 void multithreading_execution(Matrix& r, long long& elapsed_time, const Matrix& m1, const Matrix& m2) {
   //std::cout << "Starting multithreading execution..." << std::endl;
-  long long start_time = milliseconds_now();
+  //long long start_time = milliseconds_now();
 
   std::thread threads[THREADS_NUMBER];
 
@@ -159,12 +163,12 @@ void multithreading_execution(Matrix& r, long long& elapsed_time, const Matrix& 
     threads[i].join();
   }
 
-  long long end_time = milliseconds_now();
+  //long long end_time = milliseconds_now();
   //std::cout << "Finishing multithreading execution..." << std::endl;
 
-  elapsed_time = end_time - start_time;
+  //elapsed_time = end_time - start_time;
 }
-
+/*
 long long milliseconds_now() {
   static LARGE_INTEGER s_frequency;
   static BOOL s_use_qpc = QueryPerformanceFrequency(&s_frequency);
@@ -176,4 +180,4 @@ long long milliseconds_now() {
   else {
     return GetTickCount();
   }
-}
+}*/
